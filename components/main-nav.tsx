@@ -7,16 +7,16 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/AuthProvider";
-import { 
-  Music, 
-  Users, 
-  Calendar, 
-  Star, 
-  ShoppingBag, 
-  User, 
-  LogIn, 
-  LogOut, 
-  Settings, 
+import {
+  Music,
+  Users,
+  Calendar,
+  Star,
+  ShoppingBag,
+  User,
+  LogIn,
+  LogOut,
+  Settings,
   UserCircle,
   Menu,
   X
@@ -78,32 +78,31 @@ export function MainNav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#CEA657] to-[#F7E29C] backdrop-blur-sm border-b shadow-md transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">          <Link href="/" className="flex items-center space-x-2">            <div className="relative h-20 w-20">
-              {/* Try-catch pattern for image with fallback */}
-              <div className="flex items-center justify-center h-full w-full">
-                <Image 
-                  src="/radio.png"
-                  alt="" 
-                  width={120} 
-                  height={80} 
-                  className="h-full w-full" 
-                  priority 
-                  onError={(e) => {
-                    // Fallback to a styled text logo if image fails to load
-                    e.currentTarget.style.display = 'none';
-                    const parent = e.currentTarget.parentElement;
-                    if (parent) {
-                      const fallback = document.createElement('div');
-                      fallback.className = 'bg-primary text-custom-white rounded-full h-12 w-12 flex items-center justify-center text-lg font-bold';
-                      fallback.innerText = 'RM';
-                      parent.appendChild(fallback);
-                    }
-                  }}
-                />
-              </div>
-            </div>
-           
-          </Link>
+        <div className="flex h-20 items-center justify-between">          <Link href="/" className="flex items-center space-x-2">            <div className="relative h-24 w-48">
+          {/* Try-catch pattern for image with fallback */}
+          <div className="flex items-center justify-center h-full w-full">
+            <Image
+              src="/radio.png"
+              alt="Radioo Logo"
+              width={192}
+              height={96}
+              className="h-full w-full brightness-110 contrast-125 saturate-110"
+              priority
+              onError={(e) => {
+                // Fallback to a styled text logo if image fails to load
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  const fallback = document.createElement('div');
+                  fallback.className = 'bg-primary text-custom-white rounded-full h-12 w-12 flex items-center justify-center text-lg font-bold';
+                  fallback.innerText = 'RM';
+                  parent.appendChild(fallback);
+                }
+              }}
+            />
+          </div>
+        </div>
+        </Link>
           <div className="hidden md:flex items-center space-x-4">
             {routes.map((route) => (
               <Button
@@ -169,9 +168,9 @@ export function MainNav() {
           </div>
           {/* Mobile menu button */}
           <div className="flex md:hidden">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleMenu}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               className="text-black"
@@ -183,7 +182,7 @@ export function MainNav() {
       </div>
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <motion.div 
+        <motion.div
           className="md:hidden"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -191,9 +190,9 @@ export function MainNav() {
         >
           <nav className="flex flex-col p-4 border-t bg-gradient-to-r from-[#CEA657] to-[#F7E29C]">
             {routes.map((route) => (
-              <Link 
+              <Link
                 key={route.href}
-                href={route.href} 
+                href={route.href}
                 className={cn(
                   "py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black",
                   pathname === route.href && "text-primary font-medium"
@@ -208,9 +207,9 @@ export function MainNav() {
             {user ? (
               <>
                 <div className="border-t my-2"></div>
-                <Link 
-                  href="/account" 
-                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black" 
+                <Link
+                  href="/account"
+                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <User className="h-4 w-4" />
@@ -218,9 +217,9 @@ export function MainNav() {
                 </Link>
                 {/* Only show My Reviews for non-admin users */}
                 {user.role !== 'admin' && (
-                  <Link 
-                    href="/reviews/my-reviews" 
-                    className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black" 
+                  <Link
+                    href="/reviews/my-reviews"
+                    className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Star className="h-4 w-4" />
@@ -228,17 +227,17 @@ export function MainNav() {
                   </Link>
                 )}
                 {user.role === 'admin' && (
-                  <Link 
-                    href="/admin" 
-                    className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black" 
+                  <Link
+                    href="/admin"
+                    className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4" />
                     <span>Admin Dashboard</span>
                   </Link>
                 )}
-                <button 
-                  className="py-2 flex items-center space-x-2 text-left hover:text-primary transition-colors text-black" 
+                <button
+                  className="py-2 flex items-center space-x-2 text-left hover:text-primary transition-colors text-black"
                   onClick={() => {
                     handleLogout();
                     setIsMenuOpen(false);
@@ -251,17 +250,17 @@ export function MainNav() {
             ) : (
               <>
                 <div className="border-t my-2"></div>
-                <Link 
-                  href="/auth/login" 
-                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black" 
+                <Link
+                  href="/auth/login"
+                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <LogIn className="h-4 w-4" />
                   <span>Login</span>
                 </Link>
-                <Link 
-                  href="/auth/signup" 
-                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black" 
+                <Link
+                  href="/auth/signup"
+                  className="py-2 flex items-center space-x-2 hover:text-primary transition-colors text-black"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <User className="h-4 w-4" />

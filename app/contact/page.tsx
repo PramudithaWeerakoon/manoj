@@ -200,8 +200,7 @@ export default function ContactPage() {
                   <Mail className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold">Email</h3>
-                    <p className="text-muted-foreground">contact@midnightecho.com</p>
-                    <p className="text-muted-foreground">bookings@midnightecho.com</p>
+                    <p className="text-muted-foreground">radioomusicevent@gmail.com</p>
                   </div>
                 </div>
 
@@ -209,21 +208,18 @@ export default function ContactPage() {
                   <Phone className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold">Phone</h3>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                    <p className="text-muted-foreground">+1 (555) 987-6543</p>
+                    <p className="text-muted-foreground">070 289 1206</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
                   <MapPin className="h-6 w-6 text-primary mt-1" />
                   <div>
-                    <h3 className="font-semibold">Address</h3>
+                    <h3 className="font-semibold">Coordinator</h3>
                     <p className="text-muted-foreground">
-                      123 Music Avenue
+                      Sajith Tharaka - Coordinator
                       <br />
-                      New York, NY 10001
-                      <br />
-                      United States
+                      Radio Entertainment
                     </p>
                   </div>
                 </div>
