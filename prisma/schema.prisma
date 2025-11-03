@@ -1,0 +1,274 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = []
+
+  // Add this to disable shadow database
+  shadowDatabaseUrl = ""
+}
+
+model Stat {
+  id     Int    @id @default(autoincrement())
+  title  String
+  value  String
+  change String
+  trend  String
+}
+
+model QuickAction {
+  id    Int    @id @default(autoincrement())
+  title String
+  label String
+  href  String
+  icon  String
+}
+
+model RecentActivity {
+  id          Int    @id @default(autoincrement())
+  action      String
+  description String
+  timestamp   String
+}
+
+model Album {
+  id           Int       @id @default(autoincrement())
+  title        String
+  release_date DateTime?
+
+  // Replace cover_art string with binary storage fields
+  coverImageName     String? // Store the uploaded image filename
+  coverImageData     Bytes? // Store the actual binary image data
+  coverImageMimeType String? // Store the image MIME type
+
+  description   String?
+  youtube_id    String?
+  tracks        Track[]
+  album_credits AlbumCredit[]
+}
+
+model Track {
+  id           Int           @id @default(autoincrement())
+  title        String
+  duration     String?
+  track_number Int
+  lyrics       String?
+  album_id     Int
+  album        Album         @relation(fields: [album_id], references: [id])
+  youtube_id   String?
+  credits      TrackCredit[]
+
+  // New fields for MP3 storage
+  audioData     Bytes? // Store the actual MP3 file data
+  audioFileName String? // Original filename
+  audioMimeType String? // MIME type (e.g., audio/mpeg)
+  artist        String? // Artist name
+  isInPlayer    Boolean   @default(false) // Flag to indicate if track should be in the player
+  addedToPlayer DateTime? // When the track was added to the player
+}
+
+model AlbumCredit {
+  id       Int    @id @default(autoincrement())
+  role     String
+  name     String
+  album_id Int
+  album    Album  @relation(fields: [album_id], references: [id])
+}
+
+model TrackCredit {
+  id       Int    @id @default(autoincrement())
+  role     String
+  name     String
+  track_id Int
+  track    Track  @relation(fields: [track_id], references: [id])
+}
+
+model Member {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  role      String
+
+  // Change to match the Blog model's approach for storing images in DB
+  imageName     String? // Store the uploaded image filename
+  imageData     Bytes? // Store the actual binary image data
+  imageMimeType String? // Store the image MIME type
+
+  bio      String?
+  joinDate DateTime
+
+  // Social media links
+  facebook  String?
+  twitter   String?
+  instagram String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id             Int      @id @default(autoincrement())
+  title          String
+  date           DateTime
+  venue          String
+  price          Float
+  availableSeats Int
+  imageName      String? // Store the uploaded image filename (deprecated, use EventImage)
+  imageData      Bytes? // Store the actual binary image data (deprecated, use EventImage)
+  imageMimeType  String? // Store the image MIME type (deprecated, use EventImage)
+  description    String?
+  category       String?  // Added this field for event categories
+  youtubeId      String?  // YouTube video ID for the event
+  images         EventImage[] // Relation to multiple images
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model EventImage {
+  id           Int      @id @default(autoincrement())
+  event        Event    @relation(fields: [eventId], references: [id])
+  eventId      Int
+  imageName    String?
+  imageData    Bytes?
+  imageMimeType String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Blog {
+  id            Int      @id @default(autoincrement())
+  title         String
+  category      String
+  imageName     String? // Store the uploaded image filename
+  imageData     Bytes? // Store the actual binary image data
+  imageMimeType String? // Store the image MIME type
+  excerpt       String?
+  content       String
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model BackgroundImage {
+  id            Int      @id @default(autoincrement())
+  title         String?
+  imageData     Bytes // Store the actual binary image data
+  imageMimeType String // Store the image MIME type
+  isActive      Boolean  @default(true)
+  order         Int      @default(0) // For controlling slideshow order
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  name          String?
+  password      String // This will store hashed passwords
+  role          String   @default("user") // "user" or "admin"
+  emailVerified Boolean  @default(false)
+  image         String?
+  reviews       Review[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  Hire Hire[]
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  rating    Int // 1-5 star rating
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  approved  Boolean  @default(false) // Admin needs to approve reviews
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscriber {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  name       String?
+  subscribed Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PlayerTrack {
+  id       Int     @id @default(autoincrement())
+  title    String
+  artist   String
+  duration String?
+
+  // Audio file data
+  audioData     Bytes // The actual MP3/audio file data
+  audioFileName String // Original filename
+  audioMimeType String // MIME type (e.g., audio/mpeg)
+
+  // Player specific fields
+  addedAt         DateTime  @default(now())
+  playCount       Int       @default(0)
+  lastPlayed      DateTime?
+  isFavorite      Boolean   @default(false)
+  orderInPlaylist Int       @default(0) // For ordering tracks in the player
+
+  // Optional fields to track the source
+  sourceType String? // "album", "upload", etc.
+  sourceId   Int? // ID of the source (e.g., album_id if from an album)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id                     Int      @id @default(autoincrement())
+  eventType              String
+  venueType              String
+  preferredDate          DateTime
+  expectedGuests         Int
+  additionalRequirements String?
+  contactName            String
+  contactEmail           String
+  status                 String   @default("pending") // pending, confirmed, cancelled
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model Hire {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @default(now())
+  payment       Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  status        String   @default("pending") // pending, confirmed, cancelled
+  contactName   String
+  contactEmail  String
+  contactMobile String?  // Made optional for existing records
+  lineup        String?  // New field for lineup selection
+  musicalOffering String? // New field for musical offering selection
+  preferredDate DateTime
+  description   String
+  imageName     String[] @default([])
+  imageData     Bytes[]  @default([])
+}
