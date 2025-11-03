@@ -41,7 +41,9 @@ const PUBLIC_ROUTES = [
   '/reviews',
   '/contact',
   '/about',
-  '/merchandise'
+  '/merchandise',
+  '/members',
+  '/blog'
 ];
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
